@@ -1,0 +1,325 @@
+{
+  "profile": {
+    "name": "刘义豪",
+    "brand": "Will Liu",
+    "role": "Video Editor\n& Copywriter",
+    "location": "Based in Beijing",
+    "faceImage": "images/face.svg",
+    "agency": "",
+    "agencyUrl": "",
+    "title": [
+      "全流程",
+      "视频剪辑",
+      "脚本",
+      "视频策划",
+      "影视宣传"
+    ],
+    "intro": "专注于电影、电视剧以及舞台剧的视频宣传<br>剪辑与策划。在不同项目的官方抖音、快手<br>以及视频号等平台累计产出300余条视频，类型<br>囊括剧情二创/混剪、幕后花絮、路演现场、<br>动态海报、角色阵容、微特辑、艺人合作等。",
+    "statement": "欢迎来到\n刘义豪的作品集\n下滑、查阅更多...",
+    "email": "will_liu97@163.com",
+    "emailSubject": "",
+    "socials": [
+      {
+        "label": "LinkedIn",
+        "text": "linkedin.com/in/bleibtgleich/",
+        "url": "https://linkedin.com/in/bleibtgleich/"
+      },
+      {
+        "label": "Behance",
+        "text": "behance.net/bleibtgleich",
+        "url": "https://behance.net/bleibtgleich"
+      },
+      {
+        "label": "Instagram",
+        "text": "instagram.com/bleibtgleich/",
+        "url": "https://instagram.com/bleibtgleich/"
+      }
+    ],
+    "manifesto": "在每一帧素材中\n寻找创意的出口",
+    "copyright": "‘26 © All Right Reserved",
+    "signoff": "",
+    "workQuote": "Crafted through irritation, perfectionism, and the constant feeling that it still could be better.",
+    "phone": "16630429528",
+    "wechatId": "Will_liu97",
+    "resumeUrl": "uploads/202610-0fe183be.pdf"
+  },
+  "projects": [
+    {
+      "slug": "velor-app",
+      "kind": "Case",
+      "title": "燃比娃",
+      "services": [
+        "视频剪辑，视频策划"
+      ],
+      "info": "《燃比娃》是一部上海美术电影制片厂出品的纯手绘动画电影。          \n\n\n我负责此电影宣传期间的短视频策划与视频剪辑，于官方抖音、快手平台共计完成近80条短视频输出，在无投流的前提下依然取得了显著的成果。",
+      "image": "uploads/asset-b9dda61c.jpeg",
+      "tone": "rose",
+      "video": ""
+    },
+    {
+      "slug": "bleibtgleich25",
+      "kind": "Case",
+      "title": "夜王",
+      "services": [
+        "视频剪辑，视频策划"
+      ],
+      "info": "《夜王》于2026年春节档上映，总票房破7亿，是2026年香港喜剧电影票房之王。我负责此电影在视频号平台的宣传工作，独立策划短视频点位并进行剪辑，贡献了此项目在视频号平台播放量最佳的数条视频。",
+      "image": "uploads/asset-3a51eb58.jpeg",
+      "tone": "lime",
+      "awards": [
+        [
+          "CSS Winner",
+          "Site of the Day"
+        ],
+        [
+          "GSAP",
+          "Site of the Day"
+        ],
+        [
+          "Awwwards",
+          "Portfolio Honors"
+        ],
+        [
+          "Awwwards",
+          "Developer Award"
+        ],
+        [
+          "Awwwards",
+          "Site of the Day"
+        ],
+        [
+          "CSS Design Awards",
+          "WOTD"
+        ]
+      ],
+      "video": ""
+    },
+    {
+      "slug": "jds",
+      "kind": "Case",
+      "title": "密档",
+      "services": [
+        "视频剪辑，视频策划，艺人合作"
+      ],
+      "info": "《密档》是一部由上海电影集团出品的历史悬疑类红色电影。我负责此电影官方抖音平台的短视频制作与视频策划，负责视频占平台全数视频的60%，贡献了数条播放量最高的视频。",
+      "image": "uploads/case-003-midang.jpeg",
+      "tone": "green",
+      "video": ""
+    },
+    {
+      "slug": "nabil-issa",
+      "kind": "Case",
+      "title": "澎湖海战",
+      "services": [
+        "视频剪辑，视频策划"
+      ],
+      "info": "《澎湖海战》是一部即将上映的历史战争电影。我负责此电影在视频号平台的视频剪辑和内容策划等工作，并且在宣传预热期提前做好花絮筛查与短视频储备等工作。",
+      "image": "uploads/asset-7ab84bf1.jpeg",
+      "tone": "sand",
+      "video": ""
+    },
+    {
+      "slug": "grabl-app",
+      "kind": "Case",
+      "title": "菜肉馄饨",
+      "services": [
+        "视频剪辑"
+      ],
+      "info": "《菜肉馄饨》是一部由上海电影集团出品的一部沪语电影。我在此项目后期收尾时负责官方抖音平台的短视频制作工作，包括路演现场、主创采访、电影的线下活动宣传等短视频制作。",
+      "image": "uploads/asset-a9bf93c5.jpeg",
+      "tone": "blue",
+      "live": "https://grabl.app/",
+      "video": ""
+    },
+    {
+      "slug": "mkaan",
+      "kind": "Case",
+      "title": "苦瓜女士 X 儒意电影",
+      "services": [
+        "视频内容负责人"
+      ],
+      "info": "负责公司有关苦瓜小姐与儒意电影联名项目的视频内容。具体工作内容包括：创意脚本、拍摄策划、素材整理、视频剪辑等。最终产出初版剪辑工程文件，协助完成发布会intro视频。",
+      "image": "uploads/offer-_1_-_-a23af3d2.jpg",
+      "tone": "gold",
+      "video": ""
+    },
+    {
+      "slug": "durak-concept",
+      "kind": "case",
+      "title": "小城大事",
+      "services": [
+        "视频剪辑，艺人合作"
+      ],
+      "info": "《小城大事》是一部由赵丽颖和黄晓明合作出演的年代电视剧。赵丽颖工作室在这部剧播出后将制作角色特辑的竞标项目推出，我负责此次项目的部分剪辑工作。",
+      "image": "uploads/asset-9696e53f.jpeg",
+      "tone": "red",
+      "video": ""
+    },
+    {
+      "slug": "metrics-over-aesthetics",
+      "kind": "case",
+      "title": "美猴王 · 一念齐天",
+      "services": [
+        "视频剪辑，视频策划"
+      ],
+      "info": "《美猴王 · 一念齐天》是结合了科技风格与神话故事、主打丰富视听效果的一部舞台剧。我负责此项目在宣传预热期的部分视频策划与剪辑工作。",
+      "image": "uploads/asset-9bb27f59.jpg",
+      "tone": "gray",
+      "video": ""
+    }
+  ],
+  "awards": [
+    {
+      "year": "喜剧/院线/粤语",
+      "project": "夜王",
+      "items": [
+        [
+          "剧情二创",
+          "趣味/职场",
+          null,
+          "uploads/asset-2fc99de6.mp4"
+        ],
+        [
+          "剧情二创",
+          "趣味/情感",
+          null,
+          "uploads/asset-6ba2bcf9.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "历史/悬疑/红色",
+      "project": "密档",
+      "items": [
+        [
+          "主创采访",
+          "艺人/共创",
+          null,
+          "uploads/asset-80dea33f.mp4"
+        ],
+        [
+          "创意混剪",
+          "热曲/热点",
+          null,
+          "uploads/asset-968f0fae.mp4"
+        ],
+        [
+          "花絮混剪",
+          "幕后/敬业",
+          null,
+          "uploads/asset-83e126fd.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "上美影/动画",
+      "project": "燃比娃",
+      "items": [
+        [
+          "动态海报",
+          "联动/剧情",
+          null,
+          "uploads/asset-be7fcac6.mp4"
+        ],
+        [
+          "创意混剪",
+          "热曲/美学",
+          null,
+          "uploads/asset-6f2f282e.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "历史/战争",
+      "project": "澎湖海战",
+      "items": [
+        [
+          "预告混剪",
+          "燃向/制作",
+          null,
+          "uploads/1-e0e2e9ef.mp4"
+        ],
+        [
+          "阵容混剪",
+          "角色/宣传",
+          null,
+          "uploads/asset-77fef66a.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "沪语/文艺",
+      "project": "菜肉馄饨",
+      "items": [
+        [
+          "路演现场",
+          "路演/活动",
+          null,
+          "uploads/600-c508f195.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "年代/剧集",
+      "project": "小城大事",
+      "items": [
+        [
+          "角色特辑",
+          "艺人/微特辑",
+          null,
+          "uploads/asset-e62fa974.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "IP/联动",
+      "project": "苦瓜女士X儒意电影",
+      "items": [
+        [
+          "Intro短片",
+          "趣味/剧情",
+          null,
+          "uploads/asset-f95a4f33.mp4"
+        ]
+      ]
+    },
+    {
+      "year": "舞台剧",
+      "project": "美猴王 · 一念齐天",
+      "items": [
+        [
+          "武术特辑",
+          "微特辑",
+          null,
+          "uploads/mk-ef9a1ef5.mp4"
+        ]
+      ]
+    }
+  ],
+  "experiments": [
+    {
+      "title": "Quiet forms",
+      "image": "images/experiment-1.svg"
+    },
+    {
+      "title": "Analog / digital",
+      "image": "images/experiment-2.svg"
+    },
+    {
+      "title": "Type study 01",
+      "image": "images/experiment-3.svg"
+    },
+    {
+      "title": "Fragments",
+      "image": "images/experiment-4.svg"
+    },
+    {
+      "title": "Get in touch",
+      "image": "images/experiment-5.svg"
+    },
+    {
+      "title": "Motion study",
+      "image": "images/experiment-6.svg"
+    }
+  ]
+}

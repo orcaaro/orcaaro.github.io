@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="description" content="刘义豪的作品集——视频剪辑" />
+    <title>刘义豪的作品集——视频剪辑</title>
+    <script>
+      /* GitHub Pages 项目站点挂在 /<repo>/ 子路径下：解析期就写入 <base>，
+         保证 style/script 与后续相对资源在任意深度的路由下都指向站点根。 */
+      (function () {
+        var routes = ['work', 'works', 'info', 'about', 'editor'];
+        var segment = location.pathname.split('/')[1] || '';
+        var root = (segment && routes.indexOf(segment) === -1) ? '/' + segment + '/' : '/';
+        document.write('<base href="' + root + '">');
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="reference.css" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
