@@ -70,7 +70,7 @@ const aboutJobs = [
     ]
   },
   {
-    period: '2025.06 - 至今', company: '独立剪辑', role: '',
+    period: '2025.07 - 至今', company: '独立剪辑', role: '',
     points: [
       '通过闲鱼、小红书、新片场等平台发布接单。',
       '独立完成信息流、Vlog、影视、游戏、泛娱乐等各类视频的后期剪辑。',
