@@ -21,7 +21,7 @@ const socialUrl = index => socialList()[index]?.url || '#';
 const mailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}&su=${encodeURIComponent(profile.emailSubject)}`;
 
 function header(){return `<header class="site-header"><button class="menu-toggle" aria-label="打开菜单"><span>菜单</span></button></header>`}
-function footerInner(){return `<div class="manifesto"><p>${esc(profile.manifesto).replace(/\n/g,'<br>')}</p><h2 class="manifesto-contact">联络我</h2></div><div class="footer-links">${footerContactLinks()}</div><div class="availability"><span>整装待发<br>为每一次天马行空</span><span class="wechat-line"><small>通过微信直接联系我：</small><img class="wechat-qr" src="images/wechat-qr.png" alt="微信二维码" loading="lazy"></span><small>通过邮箱直接联系我：</small><a href="${mailLink}">${profile.email}</a></div><div class="footer-bottom"><a href="/" data-nav class="footer-brand"><span>Will</span><span>Liu</span></a><span>${profile.copyright}</span><span>${profile.signoff}</span></div>`}
+function footerInner(){return `<div class="manifesto"><p>${esc(profile.manifesto).replace(/\n/g,'<br>')}</p><h2 class="manifesto-contact">联络我</h2></div><div class="footer-links">${footerContactLinks()}</div><div class="availability"><span>整装待发<br>为每一次天马行空</span><span class="wechat-line"><small>通过微信直接联系我：</small><img class="wechat-qr" src="images/wechat-qr.png" alt="微信二维码" loading="lazy"></span><small>通过邮箱直接联系我：</small><a href="${mailLink}">${profile.email}</a></div><div class="footer-bottom"><a href="${href('/')}" data-nav class="footer-brand"><span>Will</span><span>Liu</span></a><span>${profile.copyright}</span><span>${profile.signoff}</span></div>`}
 function footer(){return `<footer class="site-footer">${footerInner()}</footer>`}
 function navOverlay(){
   const navLink=(label,to,i)=>`<a href="${href(to)}" data-nav><sup>${i}</sup><span class="nav-label">${label}</span><b>↗</b></a>`;
@@ -30,7 +30,7 @@ function navOverlay(){
 function projectCard(p,index){return `<a class="project-card reveal" href="${href(slugPath(p.slug))}" data-nav><div class="project-image tone-${p.tone}"><img loading="lazy" src="${p.image}" alt="${esc(p.title)} project preview"><span class="card-index">${String(index+1).padStart(2,'0')}</span><span class="explore">Explore <b>↗</b></span><div class="project-meta"><span class="kind">${esc(p.kind)}</span><h3>${esc(p.title)}</h3><span class="services">${p.services.map(esc).join(', ')}</span></div></div></a>`}
 function home(){const featured=projects.slice(0,8);return `${header()}<main><section class="hero"><div class="hero-orbit" aria-hidden="true"><div class="orbit-list"></div></div><canvas id="reveal-canvas"></canvas><div class="hero-left"><img class="face-mark" src="images/face.svg" alt=""><span class="hero-role">${esc(profile.role)}</span></div><div class="hero-top">${esc(profile.location)}</div><div class="hero-title"><p class="hero-name"><span class="gline">${esc(profile.name)}</span><span class="gline">${esc(profile.brand)}</span></p><h1>${profile.title.map((x,i)=>`<span class="title-line line-${i+1}">${esc(x)}</span>`).join('')}</h1><p class="hero-intro">${introLines(profile.intro)}</p></div><div class="hero-bottom"><span>Scroll to explore <i>↓</i></span><span>© '26</span></div><div class="cursor-label">Move to reveal</div></section><section class="statement-section"><p class="reveal">${profile.statement.split(/\r?\n/).map((line,i)=>`<span class="statement-line line-${i+1}">${esc(line)}</span>`).join('')}</p></section><section class="home-work-stage"><span class="home-work-label">参与项目</span><span class="home-work-years">25-26</span><div class="home-art-scene count-${featured.length}">${featured.map((p,i)=>`<a class="home-art-card art-${i+1}" href="${href(slugPath(p.slug))}" data-nav><img loading="lazy" src="${p.image}" alt="${esc(p.title)}"></a>`).join('')}</div><a class="all-works-link" href="${href('/work')}" data-nav>所有项目</a></section><section class="awards-section section-pad"><div class="section-heading reveal"><div><h2>视频速览</h2></div><span class="award-mark">✳</span></div><div class="award-list">${awards.map(a=>`<div class="award-year reveal"><div class="award-project"><span>${a.year}</span><span>${esc(a.project)}</span></div><div class="award-items">${a.items.map(it=>`<div><span>${esc(it[0])}</span><span>${esc(it[1])}</span><b>↗</b></div>`).join('')}</div></div>`).join('')}</div></section></main>${footer()}${navOverlay()}`}
 function workPage(){return `${header()}<main class="work-page"><section class="work-presentation" data-view="cards"><span class="work-year year-24">25</span><div class="work-panel"><h1>项目速览</h1><div class="work-mode"><button class="active" data-mode="cards">Cards</button><span>/</span><button data-mode="sphere">Sphere</button></div><div class="sphere-view">${projects.slice(0,8).map((p,i)=>`<a class="sphere-card sphere-${i+1}" href="${href(slugPath(p.slug))}" data-nav><img src="${p.image}" alt="${esc(p.title)}"></a>`).join('')}</div></div><span class="work-year year-26">26</span></section><div class="work-grid">${projects.map(projectCard).join('')}</div><a class="all-work work-home-link" href="${href('/')}" data-nav><span>返回主页</span><span>↗</span></a></main>${footer()}${navOverlay()}`}
-function detailPage(p){const idx=projects.indexOf(p), next=[projects[(idx+1)%projects.length],projects[(idx+2)%projects.length]];return `${header()}<main class="detail-page"><section class="detail-hero"><div class="detail-kicker"><span>${p.kind} / 0${String(idx+1).padStart(2,'0')}</span></div><h1>${esc(p.title)}</h1><div class="detail-lead"><div><span class="eyebrow">Info</span><p>${esc(p.info||p.title)}</p></div><div><span class="eyebrow">Services</span><p>${p.services.map(esc).join('<br>')||'—'}</p>${p.live?`<a class="live-link" href="${p.live}" target="_blank" rel="noreferrer">Live Site ↗</a>`:''}</div><span class="lead-divider" aria-hidden="true"></span></div></section><div class="detail-art tone-${p.tone}">${p.video?`<video src="${esc(p.video)}" autoplay muted loop playsinline controls></video>`:`<img src="${esc(p.image)}" alt="${esc(p.title)} project artwork">`}<span>Scroll or explore ↓</span></div>${p.slug==='bleibtgleich25'?'':p.awards?`<section class="detail-awards section-pad"><span class="eyebrow">Awards & Recognitions</span><div>${p.awards.map(a=>`<p><span>${esc(a[0])}</span><span>${esc(a[1])}</span></p>`).join('')}</div></section>`:''}<section class="next-projects section-pad"><div class="next-title"><h2>下一个项目</h2></div><div class="next-grid">${next.map(projectCard).join('')}</div><a class="all-work" href="${href('/work')}" data-nav><span>返回所有项目</span><span>↗</span></a><a class="all-work detail-home-link" href="${href('/')}" data-nav><span>返回主页</span><span>↗</span></a></section></main>${footer()}${navOverlay()}`}
+function detailPage(p){const idx=projects.indexOf(p), next=[projects[(idx+1)%projects.length],projects[(idx+2)%projects.length]];return `${header()}<main class="detail-page"><section class="detail-hero"><div class="detail-kicker"><span>${p.kind} / 0${String(idx+1).padStart(2,'0')}</span></div><h1>${esc(p.title)}</h1><div class="detail-lead"><div class="lead-services"><span class="eyebrow">Services</span><p>${p.services.map(esc).join('<br>')||'—'}</p>${p.live?`<a class="live-link" href="${p.live}" target="_blank" rel="noreferrer">Live Site ↗</a>`:''}</div><div class="lead-info"><span class="eyebrow">Info</span><p>${esc(p.info||p.title)}</p></div><span class="lead-divider" aria-hidden="true"></span></div></section><div class="detail-art tone-${p.tone}">${p.video?`<video src="${esc(p.video)}" autoplay muted loop playsinline controls></video>`:`<img src="${esc(p.image)}" alt="${esc(p.title)} project artwork">`}<span>Scroll or explore ↓</span></div>${p.slug==='bleibtgleich25'?'':p.awards?`<section class="detail-awards section-pad"><span class="eyebrow">Awards & Recognitions</span><div>${p.awards.map(a=>`<p><span>${esc(a[0])}</span><span>${esc(a[1])}</span></p>`).join('')}</div></section>`:''}<section class="next-projects section-pad"><div class="next-title"><h2>下一个项目</h2></div><div class="next-grid">${next.map(projectCard).join('')}</div><a class="all-work" href="${href('/work')}" data-nav><span>返回所有项目</span><span>↗</span></a><a class="all-work detail-home-link" href="${href('/')}" data-nav><span>返回主页</span><span>↗</span></a></section></main>${footer()}${navOverlay()}`}
 function awardsSectionMarkup(){return `<section class="awards-section section-pad" id="videos"><div class="section-heading reveal"><div><h2>视频速览</h2></div><span class="award-mark">✳</span></div><div class="award-list">${awards.map(a=>`<div class="award-year reveal"><div class="award-project"><span>${a.year}</span><span>${esc(a.project)}</span></div><div class="award-items">${a.items.map(it=>`<div><span>${esc(it[0])}</span><span>${esc(it[1])}</span><b>↗</b></div>`).join('')}</div></div>`).join('')}</div></section>`}
 const mailIconSVG='<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="11" fill="#111"/><path d="M5.5 8.5h13v7h-13z" fill="none" stroke="#fff" stroke-width="1.2"/><path d="M5.5 8.5 12 13l6.5-4.5" fill="none" stroke="#fff" stroke-width="1.2"/></svg>';
 function ringPlayerMarkup(){
@@ -56,7 +56,7 @@ function ringPage(){
     <div class="ring-stage" id="ring-stage"></div>
     <a class="ring-back" href="${href('/')}" data-nav>← 返回主页</a>
     <div class="ring-hud ring-hud-top"><div><span class="ring-name">${esc(profile.name)}</span><span class="ring-role">视频剪辑</span></div></div>
-    <div class="ring-hud ring-hud-bottom"><span class="ring-caption" id="ring-caption"></span><span class="ring-hint">移动鼠标环视 · 拖拽转动 · 点击封面选中</span></div>
+    <div class="ring-hud ring-hud-bottom"><span class="ring-caption" id="ring-caption"></span><span class="ring-hint">转动并点击选中视频</span></div>
     <div class="ring-loader" id="ring-loader"><small>正在加载视频</small><div class="ring-bar"><i id="ring-bar"></i></div></div>
   </main>${ringPlayerMarkup()}${navOverlay()}`;
 }
@@ -173,7 +173,10 @@ async function mountRingPage(){
   ringDispose = mod.mountRing(stage, { awards });
 }
 function render(){const p=path();ringToken++;if(ringDispose){ringDispose();ringDispose=null}document.body.classList.toggle('ring-mode',p==='/info');const detail=p.startsWith('/works/')?projects.find(x=>slugPath(x.slug)===p):null;app.innerHTML=p==='/editor'?editorPage():p==='/work'?workPage():p==='/info'?ringPage():p==='/about'?aboutPage():detail?detailPage(detail):home();const face=document.querySelector('.face-mark');if(face)face.src=profile.faceImage||'images/face.svg';bind();gooInit();scrollToHash();if(p==='/info')mountRingPage();}
-function bind(){document.querySelectorAll('[data-nav]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState({},'',a.getAttribute('href'));window.scrollTo(0,0);render();}));window.onpopstate=()=>{window.scrollTo(0,0);render()};if(path()==='/editor'){bindEditor();return;}const menu=document.querySelector('.menu-toggle'), overlay=document.querySelector('.nav-overlay');
+/* 路由切换时瞬间回到页面顶部：全局 CSS 有 scroll-behavior:smooth，
+   平滑滚动在长页面上会被渲染/图片加载打断，导致移动端停在页面中部。 */
+function jumpTop(){const de=document.documentElement;const prev=de.style.scrollBehavior;de.style.scrollBehavior='auto';window.scrollTo(0,0);requestAnimationFrame(()=>{de.style.scrollBehavior=prev})}
+function bind(){document.querySelectorAll('[data-nav]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();history.pushState({},'',a.getAttribute('href'));jumpTop();render();}));window.onpopstate=()=>{jumpTop();render()};if(path()==='/editor'){bindEditor();return;}const menu=document.querySelector('.menu-toggle'), overlay=document.querySelector('.nav-overlay');
 const menuLabel=text=>{if(!menu)return;menu.querySelector('span').textContent=text;menu.setAttribute('aria-label',text==='返回'?'关闭菜单，返回主页':'打开菜单')};
 const close=()=>{overlay?.classList.remove('open');overlay?.setAttribute('aria-hidden','true');document.body.classList.remove('menu-open');menuLabel('菜单')};
 menu?.addEventListener('click',()=>{
@@ -252,6 +255,8 @@ function fitHeroIntro(){
 function setupReveal(){
   const cover=document.querySelector('#reveal-canvas');
   if(!cover)return;
+  /* 移动端：保留白色遮罩但不做撕开动效（画布保持纯白静态覆盖，文字层在其上；PC 端不变） */
+  if(matchMedia('(max-width: 800px)').matches){cover.classList.add('reveal-static');return}
   if(!FLUID_REVEAL)return setupRevealLegacy();
   const probe=document.createElement('canvas');
   if(!probe.getContext('webgl2')||matchMedia('(pointer: coarse)').matches)return setupRevealLegacy();
@@ -549,36 +554,51 @@ function setupHeroOrbit(){
 
 let clockTimer;
 function setupClock(){const el=document.querySelector('.local-time');if(!el)return;clearInterval(clockTimer);const update=()=>{if(!el.isConnected){clearInterval(clockTimer);return}el.textContent=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Kyiv',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date())};update();clockTimer=setInterval(update,1000)}
+const posterOfVideo = src => 'posters/' + String(src||'').split('/').pop().replace(/\.[^.]+$/, '') + '.jpg';
+/* 「视频速览」预览面板：PC 悬停触发，移动端（无 hover 设备）点击触发，同一套预览交互 */
 function setupAwards(){
   const list=document.querySelector('.award-list');if(!list)return;
   const preview=document.createElement('div');preview.className='award-video-preview';preview.setAttribute('aria-hidden','true');list.append(preview);
-  let hideTimer;
-  const hide=()=>{clearTimeout(hideTimer);hideTimer=setTimeout(()=>{preview.classList.remove('open');preview.setAttribute('aria-hidden','true');preview.innerHTML=''},420)};
+  let hideTimer,currentRow=null;
+  const close=()=>{clearTimeout(hideTimer);preview.classList.remove('open');preview.setAttribute('aria-hidden','true');preview.innerHTML='';currentRow=null};
+  const hide=()=>{clearTimeout(hideTimer);hideTimer=setTimeout(close,420)};
   preview.addEventListener('pointerenter',()=>clearTimeout(hideTimer));preview.addEventListener('pointerleave',hide);
   const groups=[...list.querySelectorAll('.award-year')];
+  const show=(row,groupIndex,itemIndex)=>{
+    clearTimeout(hideTimer);
+    const group=groups[groupIndex];
+    const item=awards[groupIndex]?.items[itemIndex]||[],labels=[...row.querySelectorAll('span')].map(el=>el.textContent.trim());
+    const project=group.querySelector('.award-project span:nth-child(2)')?.textContent||'';
+    const year=group.querySelector('.award-project span:first-child')?.textContent||'';
+    const video=item[3]||'';preview.innerHTML=video?`<div class="award-video-frame"><video src="${esc(video)}" poster="${esc(posterOfVideo(video))}" preload="metadata" playsinline aria-label="${esc(`${project} ${labels[1]||''} video`)}"></video><button class="award-video-play" type="button" aria-label="播放视频">▶</button></div><span class="award-video-title">${esc(year)} · ${esc(project)} / ${esc(labels[0]||'Award')} — ${esc(labels[1]||'Recognition')}</span>`:`<div class="award-video-empty"><span>AWARD FILM</span><b>${esc(labels[1]||'Recognition')}</b><small>在编辑器中上传此奖项的视频</small></div>`;
+    const rect=row.getBoundingClientRect(),frame=preview.querySelector('.award-video-frame');
+    /* 预览框垂直居中于当前行，且整体始终留在视口内（竖向视频放大后高度变化，需按实际高度重算） */
+    const place=()=>{const m=12,h=preview.offsetHeight,hh=Math.min((innerHeight-2*m)/2,Math.max(innerHeight*.34,h/2));preview.style.top=`${Math.max(m+hh,Math.min(innerHeight-m-hh,rect.top+rect.height/2))}px`};
+    preview.classList.remove('is-portrait');
+    place();preview.style.left='';preview.classList.add('open');preview.setAttribute('aria-hidden','false');
+    const player=frame?.querySelector('video'),play=frame?.querySelector('.award-video-play');
+    player?.addEventListener('loadedmetadata',()=>{
+      preview.classList.toggle('is-portrait',player.videoHeight>player.videoWidth);
+      player.style.setProperty('--video-ratio',`${player.videoWidth} / ${player.videoHeight}`);
+      requestAnimationFrame(place);
+    },{once:true});
+    play?.addEventListener('click',e=>{e.stopPropagation();try{play.hidden=true;player.controls=true;player.play().catch(()=>{})}catch{play.hidden=false}});
+    currentRow=row;
+  };
+  /* 点击预览模式：触屏设备（hover:none）或窄屏（≤800px，移动端布局） */
+  const clickMode=matchMedia('(hover: none)').matches||matchMedia('(max-width: 800px)').matches;
   groups.forEach((group,groupIndex)=>group.querySelectorAll('.award-items>div').forEach((row,itemIndex)=>{
     row.classList.add('award-interactive-row');
-    row.addEventListener('pointerenter',()=>{
-      clearTimeout(hideTimer);
-      const item=awards[groupIndex]?.items[itemIndex]||[],labels=[...row.querySelectorAll('span')].map(el=>el.textContent.trim());
-      const project=group.querySelector('.award-project span:nth-child(2)')?.textContent||'';
-      const year=group.querySelector('.award-project span:first-child')?.textContent||'';
-      const video=item[3]||'';preview.innerHTML=video?`<div class="award-video-frame"><video src="${esc(video)}" preload="metadata" playsinline aria-label="${esc(`${project} ${labels[1]||''} video`)}"></video><button class="award-video-play" type="button" aria-label="播放视频">▶</button></div><span class="award-video-title">${esc(year)} · ${esc(project)} / ${esc(labels[0]||'Award')} — ${esc(labels[1]||'Recognition')}</span>`:`<div class="award-video-empty"><span>AWARD FILM</span><b>${esc(labels[1]||'Recognition')}</b><small>在编辑器中上传此奖项的视频</small></div>`;
-      const rect=row.getBoundingClientRect(),frame=preview.querySelector('.award-video-frame');
-      /* 预览框垂直居中于当前行，且整体始终留在视口内（竖向视频放大后高度变化，需按实际高度重算） */
-      const place=()=>{const m=12,h=preview.offsetHeight,hh=Math.min((innerHeight-2*m)/2,Math.max(innerHeight*.34,h/2));preview.style.top=`${Math.max(m+hh,Math.min(innerHeight-m-hh,rect.top+rect.height/2))}px`};
-      preview.classList.remove('is-portrait');
-      place();preview.style.left='';preview.classList.add('open');preview.setAttribute('aria-hidden','false');
-      const player=frame?.querySelector('video'),play=frame?.querySelector('.award-video-play');
-      player?.addEventListener('loadedmetadata',()=>{
-        preview.classList.toggle('is-portrait',player.videoHeight>player.videoWidth);
-        player.style.setProperty('--video-ratio',`${player.videoWidth} / ${player.videoHeight}`);
-        requestAnimationFrame(place);
-      },{once:true});
-      play?.addEventListener('click',async()=>{try{play.hidden=true;player.controls=true;await player.play()}catch{play.hidden=false}});
-    });
-    row.addEventListener('pointerleave',hide);
+    if(!clickMode){
+      /* PC：悬停预览（原交互不变） */
+      row.addEventListener('pointerenter',()=>show(row,groupIndex,itemIndex));
+      row.addEventListener('pointerleave',hide);
+    }else{
+      /* 移动端：点击行打开预览（带封面，点 ▶ 播放），再点同一行或空白处关闭 */
+      row.addEventListener('click',e=>{e.stopPropagation();currentRow===row?close():show(row,groupIndex,itemIndex)});
+    }
   }));
+  if(clickMode)document.addEventListener('click',e=>{if(currentRow&&!e.target.closest('.award-items>div')&&!e.target.closest('.award-video-preview'))close()});
 }
 function openLightbox(card){const box=document.querySelector('.image-lightbox');if(!box)return;box.querySelector('img').src=card.dataset.image;box.querySelector('span').textContent=card.dataset.title;box.classList.add('open');box.setAttribute('aria-hidden','false')}
 function closeLightbox(){const box=document.querySelector('.image-lightbox');box?.classList.remove('open');box?.setAttribute('aria-hidden','true')}

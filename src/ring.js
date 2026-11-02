@@ -306,7 +306,7 @@ export function mountRing(stage, { awards = [] } = {}) {
     tgtRotY = face; dragRotY = face;
     tgtPosY = clamp(m.position.y, -halfH(), halfH());
     if (caption) {
-      caption.textContent = '再次点击封面播放 · ' + m.userData.clip.group;
+      caption.textContent = '点击播放 · ' + m.userData.clip.group;
       caption.classList.add('show');
     }
     refreshDim();
