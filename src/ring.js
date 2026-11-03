@@ -420,7 +420,8 @@ export function mountRing(stage, { awards = [] } = {}) {
     curve = clamp(lerp(curve, .3, clamp(vx * 2 / 500, 0, .3)), 0, .3);
     tilt = clamp(tilt + clamp(vy / 40, -.06, .06), -.5, .5);
     mouse.x = nx; mouse.y = ny;
-    if (!dragging && introDone && !pinned) {
+    /* 仅 PC：同上，避免移动端点击（合成 mousemove）把视角重置回初始位置 */
+    if (!dragging && introDone && !pinned && !isMobile) {
       swayStarted = true;
       const maxRot = THREE.MathUtils.degToRad(135 - hFov() / 2);
       tgtRotY = -(mouse.x / innerWidth * 2 - 1) * maxRot;
@@ -484,7 +485,8 @@ export function mountRing(stage, { awards = [] } = {}) {
     }
 
     if (introDone) {
-      if (!dragging && !pinned && swayStarted) {
+      /* 仅 PC：视角跟随鼠标摇摆；移动端无鼠标，若同样覆写会把拖拽后的视角拉回初始位置 */
+      if (!dragging && !pinned && swayStarted && !isMobile) {
         const maxRot = THREE.MathUtils.degToRad(135 - hFov() / 2);
         tgtRotY = -(mouse.x / innerWidth * 2 - 1) * maxRot;
         tgtPosY = (-(mouse.y / innerHeight) * 2 + 1) * halfH();
