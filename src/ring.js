@@ -545,10 +545,12 @@ export function mountRing(stage, { awards = [] } = {}) {
 
     if (introT >= 0 && !introDone) {
       introT += dt;
-      const p = clamp(introT / 3.5, 0, 1);
+      /* 手机端入场更快：总时长 2.2s、淡入 1.4s，避免加载层收起后长时间偏黑；桌面维持 3.5s/3s */
+      const INTRO_D = isMobile ? 2.2 : 3.5, INTRO_FADE = isMobile ? 1.4 : 3;
+      const p = clamp(introT / INTRO_D, 0, 1);
       camera.position.z = lerp(isMobile ? 1750 : 3050, 0, easeInOut(p));
-      for (const m of meshes) m.material.uniforms.uOpacity.value = lerp(0, m.userData.baseOpacity, clamp((introT - .15) / 3, 0, 1));
-      const q2 = easeInOut(clamp((introT - 2.5) / 1, 0, 1));
+      for (const m of meshes) m.material.uniforms.uOpacity.value = lerp(0, m.userData.baseOpacity, clamp((introT - .15) / INTRO_FADE, 0, 1));
+      const q2 = easeInOut(clamp((introT - (INTRO_D - 1)) / 1, 0, 1));
       const Y = new THREE.Vector3(0, 1, 0);
       for (const m of meshes) {
         const dir = (m.position.x < 0 ? 1 : -1) * Math.PI / 8 * (1 - q2);
