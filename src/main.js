@@ -823,6 +823,9 @@ function gooInit() {
   if (path() === '/info') return;                 // 环幕页文字不做凝聚动画
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (path() === '/editor') return;
+  /* iOS Safari 对 filter:url(#id) 引用有掉黑块/渲染残影的历史 bug，
+     移动端整体跳过 goo（文字直接显示，不做凝聚动画），排除黑方块来源 */
+  if (matchMedia('(max-width: 800px)').matches) return;
   const units = gooCollect();
   if (!units.length) return;
   units.forEach(el => el.classList.add('goo-pending'));
