@@ -30,10 +30,12 @@ uniform float uImageHeight;
 uniform float uSizeFactorX;
 uniform float uSizeFactorY;
 uniform float uTiltAngle;
+uniform vec2 uUvScale;
+uniform vec2 uUvOffset;
 varying vec2 vUv;
 varying float fogDepth;
 void main(){
-  vUv = uv;
+  vUv = uv * uUvScale + uUvOffset;
   vec3 pos = position;
   float percentageX = (abs(pos.x) / (uImageWidth * 0.5)) * 1000.0;
   float percentageY = (abs(pos.y) / (uImageHeight * 0.5)) * 1000.0;
@@ -222,24 +224,33 @@ export function mountRing(stage, { awards = [] } = {}) {
   let hovered = null;
 
   /* —— 一级：封面环 —— */
+  /* 移动端竖版封面统一「画框」：等宽等高 + 同一半径 ⇒ 屏幕上视觉尺寸完全一致；
+     原始比例不同的封面用 UV 居中裁切填充（cover，等比不拉伸）。 */
+  const P_BOX = { w: 330, h: 552, r: 1330, aspect: 552 / 330 };
+
   /* 移动端专用：单排「居中横向环绕」布局。
-     所有封面同一仰角（ψ=0，垂直居中成一条水平带），
-     按宽度降序把宽卡排到更远的半径 → 每张的角宽度（2·atan(w/2/r)）近似一致，
-     再沿方位角均匀铺开并留缝 → 角空间互不重叠 ⇒ 屏幕零重叠，封面尺寸基本不变。 */
+     所有封面同一仰角（ψ=0，垂直居中成一条水平带）；
+     横版按宽度降序排到更远半径（角宽度趋于一致），竖版固定半径；
+     再沿方位角均匀铺开并留缝 → 角空间互不重叠 ⇒ 屏幕零重叠。 */
   function layoutRow(items) {
     const N = items.length;
     if (!N) return null;
     const arc = POP_ANGLE * Math.PI / 180;
     const meta = items.map(({ aspect }) => {
-      const z = Math.random();
       const portrait = aspect < 1;
-      const grow = portrait ? 1 + z * 0.45 : 1 + z * 0.7;
-      const w0 = Math.sqrt(BASE_AREA * aspect) * scaleUp * grow * (portrait ? PORTRAIT_SCALE : 1);
+      if (portrait) {
+        const A = aspect, T = P_BOX.aspect;
+        const sx = A > T ? T / A : 1, sy = A > T ? 1 : A / T;
+        return { portrait, w: P_BOX.w, h: P_BOX.h, r: P_BOX.r, uv: { sx, sy, ox: (1 - sx) / 2, oy: (1 - sy) / 2 } };
+      }
+      const z = Math.random();
+      const w0 = Math.sqrt(BASE_AREA * aspect) * scaleUp * (1 + z * 0.7);
       return { portrait, w: w0, h: w0 / aspect };
     });
-    const order = meta.map((_, i) => i).sort((a, b) => meta[b].w - meta[a].w);
-    order.forEach((idx, rank) => {
-      meta[idx].r = MIN_R + (MAX_R - MIN_R) * (N > 1 ? rank / (N - 1) : .5);
+    /* 横版按宽度降序 → 宽卡排远半径；竖版半径已固定，不参与排序 */
+    const land = meta.map((m, i) => i).filter(i => !meta[i].portrait).sort((a, b) => meta[b].w - meta[a].w);
+    land.forEach((idx, rank) => {
+      meta[idx].r = MIN_R + (MAX_R - MIN_R) * (land.length > 1 ? rank / (land.length - 1) : .5);
     });
     const slot = arc / N;
     for (const m of meta) {
@@ -264,10 +275,10 @@ export function mountRing(stage, { awards = [] } = {}) {
   function buildCards(items) {
     const plan = isMobile ? layoutRow(items) : null;
     items.forEach(({ clip, aspect, im }, idx) => {
-      let width, height, radius, pos;
+      let width, height, radius, pos, uv = null;
       if (plan) {
         const p = plan[idx];
-        width = p.w; height = p.h; radius = p.r;
+        width = p.w; height = p.h; radius = p.r; uv = p.uv || null;
         pos = { phi: p.phi, psi: 0, w: p.w, h: p.h };
       } else {
         const z = Math.random();
@@ -289,6 +300,8 @@ export function mountRing(stage, { awards = [] } = {}) {
           uImageWidth: { value: width }, uImageHeight: { value: height },
           uSizeFactorX: { value: width / 2000 }, uSizeFactorY: { value: height / 2000 },
           uTiltAngle: { value: 0 }, uTexture: { value: null },
+          uUvScale: { value: new THREE.Vector2(uv ? uv.sx : 1, uv ? uv.sy : 1) },
+          uUvOffset: { value: new THREE.Vector2(uv ? uv.ox : 0, uv ? uv.oy : 0) },
           uOpacity: { value: 0 },
           fogColor: { value: new THREE.Color(0x121212) }, fogNear: { value: FOG_NEAR }, fogFar: { value: FOG_FAR }
         }
@@ -581,6 +594,10 @@ export function mountRing(stage, { awards = [] } = {}) {
       return { x: Math.round((v.x + 1) / 2 * innerWidth), y: Math.round((1 - v.y) / 2 * innerHeight), visible: v.z < 1 && Math.abs(v.x) < 1 && Math.abs(v.y) < 1, clip: m.userData.clip.group };
     },
     angleOf: i => meshes[i] ? Math.round(Math.atan2(-Math.cos(meshes[i].userData.angle), -Math.sin(meshes[i].userData.angle)) * 1000) / 1000 : null,
+    sizes: () => meshes.map(m => ({
+      w: Math.round(m.geometry.parameters.width), h: Math.round(m.geometry.parameters.height),
+      r: Math.round(Math.hypot(m.position.x, m.position.y, m.position.z)), clip: m.userData.clip.group
+    })),
     pick: (x, y) => { const m = pickAt(x, y); return m ? meshes.indexOf(m) : -1; },
     clips: () => clips.map(c => c.src.split('/').pop())
   };
