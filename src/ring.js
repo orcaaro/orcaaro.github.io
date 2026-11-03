@@ -20,7 +20,11 @@ const CAPTIONS = {
   'mk-ef9a1ef5.mp4': ['筛选剧场幕后素材，从剧目内容和训练片段入手', '打造从练习、打磨、敬业到登场这条完整时间线的武术特辑']
 };
 
-const posterOf = src => 'posters/' + src.split('/').pop().replace(/\.[^.]+$/, '') + '.jpg';
+/* 手机端用 posters/m/ 下的小图（600px，约为原图 55% 体积），桌面用原图 */
+const posterOf = src => {
+  const mobile = matchMedia('(max-width: 800px)').matches;
+  return (mobile ? 'posters/m/' : 'posters/') + src.split('/').pop().replace(/\.[^.]+$/, '') + '.jpg';
+};
 
 const VERT = `
 uniform float uCurveAmountX;
@@ -211,7 +215,8 @@ export function mountRing(stage, { awards = [] } = {}) {
 
   let introT = -1, introDone = false;
   const startIntro = () => { if (introT < 0) introT = 0; };
-  const finishIntro = () => { introDone = true; loader?.classList.add('done'); };
+  /* 只有已经有封面时才收起加载层，避免「加载条消失但画面全黑」 */
+  const finishIntro = () => { introDone = true; if (meshes.length) loader?.classList.add('done'); };
 
   const hFov = () => 2 * Math.atan(Math.tan(camera.fov * Math.PI / 180 / 2) * camera.aspect) * 180 / Math.PI;
   let swayStarted = false;
@@ -333,6 +338,14 @@ export function mountRing(stage, { awards = [] } = {}) {
       meshes.push(mesh);
       if (window.RING_DEBUG) console.log('[ring]', 'r=' + Math.round(radius), 'phi=' + (pos.phi * 180 / Math.PI).toFixed(1), 'psi=' + (pos.psi * 180 / Math.PI).toFixed(1), 'w=' + Math.round(width), 'h=' + Math.round(height), clip.src.split('/').pop());
     });
+    /* 入场动画已结束才拿到封面（慢网络）：直接置为可见，否则透明度会永远停在 0 */
+    if (introDone) {
+      for (const m of meshes) m.material.uniforms.uOpacity.value = m.userData.baseOpacity;
+      loader?.classList.add('done');
+    } else {
+      /* 封面就绪即收起加载层，让入场动画（淡入＋推近）直接可见，而不是再等 3.5 秒黑屏 */
+      setTimeout(() => loader?.classList.add('done'), 300);
+    }
   }
 
   const raycaster = new THREE.Raycaster();
@@ -507,20 +520,21 @@ export function mountRing(stage, { awards = [] } = {}) {
 
   /* —— 加载与渲染 —— */
   (async () => {
-    const items = [];
-    for (const clip of clips) {
+    /* 并行下载全部封面：串行 await 会把每张图的往返延迟叠加（慢网下可达 10s+） */
+    const results = await Promise.all(clips.map(async clip => {
       const im = await loadImage(posterOf(clip.src));
-      if (disposed) return;
       loaded++;
       if (bar) bar.style.width = (loaded / clips.length * 100) + '%';
-      if (!im) continue;
-      items.push({ clip, aspect: im.naturalWidth / im.naturalHeight || 16 / 9, im });
-    }
+      return im ? { clip, aspect: im.naturalWidth / im.naturalHeight || 16 / 9, im } : null;
+    }));
     if (disposed) return;
+    const items = results.filter(Boolean);
+    if (!items.length) { loader?.classList.add('done'); return; }
     buildCards(items);
     startIntro();
   })();
-  introTimer = setTimeout(startIntro, 3000);
+  /* 兜底：极端情况下（图片挂住）也要开始动画，避免一直停在加载层 */
+  introTimer = setTimeout(startIntro, 12000);
   cleanup.push(() => clearTimeout(introTimer));
 
   const clock = new THREE.Clock();

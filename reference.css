@@ -163,7 +163,8 @@ body.ring-mode .menu-toggle{background:rgba(255,255,255,.16);color:#fff;-webkit-
 .ring-back:hover{opacity:1}
 .ring-loader{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:70;color:#fff;flex-direction:column;gap:14px;transition:opacity .8s}
 .ring-loader.done{opacity:0;pointer-events:none}
-.ring-loader small{font-size:11px;letter-spacing:.3em;opacity:.5}
+.ring-loader small{font-size:11px;letter-spacing:.3em;opacity:.5;animation:ringPulse 1.6s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{opacity:.28}50%{opacity:.7}}
 .ring-loader .ring-bar{width:180px;height:2px;background:rgba(255,255,255,.15)}
 .ring-loader .ring-bar i{display:block;height:100%;width:0;background:#fff;transition:width .3s}
 .ring-page.is-playing .ring-hud{opacity:0;transition:opacity .3s}

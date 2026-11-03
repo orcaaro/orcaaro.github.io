@@ -921,5 +921,16 @@ async function initialize(){
   try{const response=await fetch('api/content');if(response.ok)apply(await response.json())}catch{}
   try{const response=await fetch('src/site-content.json');if(response.ok)apply(await response.json())}catch{}
   render();
+  prefetchRing();
+}
+
+/* 空闲时预取环幕模块（three.js ~270KB gz）：点进 /info 时直接从缓存加载，不用等下载。
+   省流量模式 / 2G 网络跳过；已在环幕页则不需要。 */
+function prefetchRing(){
+  if (path()==='/info') return;
+  const c=navigator.connection;
+  if (c&&(c.saveData||/2g/.test(c.effectiveType||''))) return;
+  const go=()=>{ if(path()!=='/info') import('./ring.js').catch(()=>{}); };
+  if (window.requestIdleCallback) requestIdleCallback(go,{timeout:4000}); else setTimeout(go,2500);
 }
 initialize();
