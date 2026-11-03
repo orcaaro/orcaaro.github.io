@@ -244,9 +244,12 @@ export function mountRing(stage, { awards = [] } = {}) {
     const meta = items.map(({ aspect }) => {
       const portrait = aspect < 1;
       if (portrait) {
+        /* A = 图片宽/高，T = 画框高/宽。cover 裁切：裁切区域宽高比必须等于画框宽高比 1/T，
+           即 su·A/sv = 1/T → su = sv/(A·T)；取 su=min(1,1/(A·T))、sv=min(1,A·T)，
+           保证区域比例恒正确且不超过原图（等比缩放填充，居中裁边，不拉伸）。 */
         const A = aspect, T = P_BOX.aspect;
-        const sx = A > T ? T / A : 1, sy = A > T ? 1 : A / T;
-        return { portrait, w: P_BOX.w, h: P_BOX.h, r: P_BOX.r, uv: { sx, sy, ox: (1 - sx) / 2, oy: (1 - sy) / 2 } };
+        const su = Math.min(1, 1 / (A * T)), sv = Math.min(1, A * T);
+        return { portrait, w: P_BOX.w, h: P_BOX.h, r: P_BOX.r, uv: { sx: su, sy: sv, ox: (1 - su) / 2, oy: (1 - sv) / 2 } };
       }
       const z = Math.random();
       const w0 = Math.sqrt(BASE_AREA * aspect) * scaleUp * (1 + z * 0.7);
