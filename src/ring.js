@@ -222,17 +222,64 @@ export function mountRing(stage, { awards = [] } = {}) {
   let hovered = null;
 
   /* —— 一级：封面环 —— */
-  function buildCards(items) {
-    for (const { clip, aspect, im } of items) {
+  /* 移动端专用：单排「居中横向环绕」布局。
+     所有封面同一仰角（ψ=0，垂直居中成一条水平带），
+     按宽度降序把宽卡排到更远的半径 → 每张的角宽度（2·atan(w/2/r)）近似一致，
+     再沿方位角均匀铺开并留缝 → 角空间互不重叠 ⇒ 屏幕零重叠，封面尺寸基本不变。 */
+  function layoutRow(items) {
+    const N = items.length;
+    if (!N) return null;
+    const arc = POP_ANGLE * Math.PI / 180;
+    const meta = items.map(({ aspect }) => {
       const z = Math.random();
       const portrait = aspect < 1;
-      /* 竖版整体 1.2 倍，但随机增幅收窄，避免极端大卡挤不进槽位 */
       const grow = portrait ? 1 + z * 0.45 : 1 + z * 0.7;
       const w0 = Math.sqrt(BASE_AREA * aspect) * scaleUp * grow * (portrait ? PORTRAIT_SCALE : 1);
-      const h0 = w0 / aspect;
-      const radius = MIN_R + (MAX_R - MIN_R) * z;
-      const pos = place(w0, h0, radius);
-      const width = pos.w, height = pos.h;
+      return { portrait, w: w0, h: w0 / aspect };
+    });
+    const order = meta.map((_, i) => i).sort((a, b) => meta[b].w - meta[a].w);
+    order.forEach((idx, rank) => {
+      meta[idx].r = MIN_R + (MAX_R - MIN_R) * (N > 1 ? rank / (N - 1) : .5);
+    });
+    const slot = arc / N;
+    for (const m of meta) {
+      let hw = Math.atan((m.w / 2) / m.r);
+      const maxHw = slot * .46;                       /* 相邻封面间至少留 8% 缝隙 */
+      if (hw > maxHw) { const s = maxHw / hw; m.w *= s; m.h *= s; hw = maxHw; }
+      m.hw = hw;
+    }
+    const used = meta.reduce((s, m) => s + 2 * m.hw, 0);
+    const gap = Math.max(.004, (arc - used) / N);
+    /* 从正前方（phi=0）向两侧交替排布：初始视角正中恰好是一张封面 */
+    meta[0].phi = 0;
+    let rC = 0, rHw = meta[0].hw, lC = 0, lHw = meta[0].hw;
+    for (let k = 1; k < N; k++) {
+      const m = meta[k];
+      if (k % 2) { m.phi = rC + rHw + gap + m.hw; rC = m.phi; rHw = m.hw; }
+      else { m.phi = lC - lHw - gap - m.hw; lC = m.phi; lHw = m.hw; }
+    }
+    return meta;
+  }
+
+  function buildCards(items) {
+    const plan = isMobile ? layoutRow(items) : null;
+    items.forEach(({ clip, aspect, im }, idx) => {
+      let width, height, radius, pos;
+      if (plan) {
+        const p = plan[idx];
+        width = p.w; height = p.h; radius = p.r;
+        pos = { phi: p.phi, psi: 0, w: p.w, h: p.h };
+      } else {
+        const z = Math.random();
+        const portrait = aspect < 1;
+        /* 竖版整体 1.2 倍，但随机增幅收窄，避免极端大卡挤不进槽位 */
+        const grow = portrait ? 1 + z * 0.45 : 1 + z * 0.7;
+        const w0 = Math.sqrt(BASE_AREA * aspect) * scaleUp * grow * (portrait ? PORTRAIT_SCALE : 1);
+        const h0 = w0 / aspect;
+        radius = MIN_R + (MAX_R - MIN_R) * z;
+        pos = place(w0, h0, radius);
+        width = pos.w; height = pos.h;
+      }
       const angle = -Math.PI / 2 + pos.phi;
       const geo = new THREE.PlaneGeometry(width, height, isMobile ? 10 : 20, isMobile ? 10 : 20);
       const mat = new THREE.ShaderMaterial({
@@ -272,7 +319,7 @@ export function mountRing(stage, { awards = [] } = {}) {
       scene.add(mesh);
       meshes.push(mesh);
       if (window.RING_DEBUG) console.log('[ring]', 'r=' + Math.round(radius), 'phi=' + (pos.phi * 180 / Math.PI).toFixed(1), 'psi=' + (pos.psi * 180 / Math.PI).toFixed(1), 'w=' + Math.round(width), 'h=' + Math.round(height), clip.src.split('/').pop());
-    }
+    });
   }
 
   const raycaster = new THREE.Raycaster();
