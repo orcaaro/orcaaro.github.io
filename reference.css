@@ -377,3 +377,11 @@ body.ring-mode .menu-toggle{background:rgba(255,255,255,.16);color:#fff;-webkit-
 
 /* 9) 菜单浮层打开时隐藏右上角「菜单」按钮：避免它（z-index 更高、尺寸不同）从「返回」按钮底下露出黑边 */
 body.menu-open .menu-toggle{visibility:hidden}
+
+/* 10) 移动端首屏画布纯属白色遮盖（海报环已隐藏，下面无内容可露）：
+   直接不渲染这张全屏 canvas —— iOS Safari 大画布在刷新/回弹后偶发掉黑瓦片（左上角黑方块）。
+   同时把 .hero 的撕开下层灰渐变改回纯白（原由画布盖住）。 */
+@media(max-width:800px){
+  .hero #reveal-canvas{display:none!important}
+  .hero{background:#fff!important;background-image:none!important}
+}

@@ -823,9 +823,6 @@ function gooInit() {
   if (path() === '/info') return;                 // 环幕页文字不做凝聚动画
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (path() === '/editor') return;
-  /* iOS Safari 对 filter:url(#id) 引用有掉黑块/渲染残影的历史 bug，
-     移动端整体跳过 goo（文字直接显示，不做凝聚动画），排除黑方块来源 */
-  if (matchMedia('(max-width: 800px)').matches) return;
   const units = gooCollect();
   if (!units.length) return;
   units.forEach(el => el.classList.add('goo-pending'));
@@ -876,6 +873,12 @@ function gooMediaReveal(el, delay = 0) {
     el.style.filter = `url(#${filter.id})`;
     el.style.opacity = '0';
     const t0 = performance.now(), dur = GOO.dur * 1.2;
+    /* 硬保险：rAF 被节流 / SVG 滤镜在 iOS 上失效时，图片不会永远停在 opacity:0 */
+    run.hard = setTimeout(() => {
+      if (run.dead) return;
+      filter.remove(); el.style.filter = ''; el.style.opacity = '';
+      el.classList.add('is-revealed'); run.dead = true;
+    }, dur + 1200);
     const tick = now => {
       if (run.dead) return;
       const p = Math.min(1, (now - t0) / dur);
@@ -886,6 +889,7 @@ function gooMediaReveal(el, delay = 0) {
       el.style.opacity = String(Math.min(1, q / .5).toFixed(3));
       if (p < 1) requestAnimationFrame(tick);
       else {
+        clearTimeout(run.hard);
         filter.remove(); el.style.filter = ''; el.style.opacity = ''; run.dead = true;
         /* 播完时若已滚出视口：重新隐身，等下次进视口再播 */
         if (el.dataset.gooIn === '1') el.classList.add('is-revealed');
@@ -916,6 +920,17 @@ function gooMediaInit() {
     }
   }, { threshold: 0 });
   media.forEach(el => gooMediaIO.observe(el));
+  /* 看门狗：IO 在个别 iOS 版本上不触发（尤其回滚、首屏）时，视口内的图片兜底显示 */
+  gooTimers.push(setInterval(() => {
+    media.forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= innerHeight) return;
+      if (gooMediaRuns.some(x => x.el === el && !x.dead)) return;
+      if (el.style.opacity !== '0' && el.classList.contains('is-revealed')) return;
+      el.style.filter = ''; el.style.opacity = '';
+      el.classList.add('is-revealed');
+    });
+  }, 2500));
 }
 
 /* 内容来源：本地编辑器 API → 静态 site-content.json（GitHub Pages 等纯静态托管走这条）→ 内置种子。 */
