@@ -385,3 +385,9 @@ body.menu-open .menu-toggle{visibility:hidden}
   .hero #reveal-canvas{display:none!important}
   .hero{background:#fff!important;background-image:none!important}
 }
+
+/* 11) 手机端：视频速览标题下方「点击查看视频」提示（桌面端隐藏） */
+.award-hint{display:none}
+@media(max-width:800px){
+  .award-hint{display:block;margin:-14px 0 24px;font:700 11px/1.2 var(--sans);letter-spacing:-.02em;color:#111;opacity:.5}
+}
