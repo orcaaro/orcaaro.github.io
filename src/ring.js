@@ -107,6 +107,7 @@ export function mountRing(stage, { awards = [] } = {}) {
 
   let disposed = false;
   let rafId = 0, introTimer = 0, hoverThrottle = 0, curIdx = -1, muted = false;
+  let renderPaused = false;   // 播放页打开时暂停环幕渲染，把 GPU 让给视频解码
   const cleanup = [];
   const on = (target, type, fn, opts) => { target.addEventListener(type, fn, opts); cleanup.push(() => target.removeEventListener(type, fn, opts)); };
 
@@ -421,6 +422,14 @@ export function mountRing(stage, { awards = [] } = {}) {
     playerEl.classList.add('open');
     pageEl?.classList.add('is-playing');
     playerEl.setAttribute('aria-hidden', 'false');
+    renderPaused = true;   // 停掉环幕渲染（下一帧起不再排队）
+  }
+  function resumeRender() {
+    if (disposed || !renderPaused) return;
+    renderPaused = false;
+    if (rafId) return;
+    clock.getDelta();                       // 吃掉暂停期间累积的时间，避免恢复首帧跳变
+    rafId = requestAnimationFrame(frame);
   }
   function closePlayer() {
     if (curIdx < 0) return;
@@ -429,6 +438,7 @@ export function mountRing(stage, { awards = [] } = {}) {
     pageEl?.classList.remove('is-playing');
     pVideo.pause();
     curIdx = -1;
+    resumeRender();
   }
   function togglePlay() {
     if (pVideo.paused) { pVideo.play().catch(() => {}); pPlay.textContent = '❚❚'; }
@@ -543,6 +553,7 @@ export function mountRing(stage, { awards = [] } = {}) {
   const clock = new THREE.Clock();
   function frame() {
     if (disposed) return;
+    if (renderPaused) { rafId = 0; return; }
     rafId = requestAnimationFrame(frame);
     const dt = Math.min(clock.getDelta(), .05);
 
